@@ -158,6 +158,27 @@ jobs:
             exit 1
           fi
 
+      - name: Extract app version from IPA
+        id: app_version
+        run: |
+          INFO_PLIST=$(unzip -l ${{ github.workspace }}/youtube.ipa | grep -o "Payload/[^/]*\.app/Info\.plist" | head -n 1)
+          if [ -z "$INFO_PLIST" ]; then
+            echo "::error::Could not find Info.plist in IPA"
+            exit 1
+          fi
+          
+          mkdir -p ${{ github.workspace }}/ipa_extract
+          unzip -p ${{ github.workspace }}/youtube.ipa "$INFO_PLIST" > ${{ github.workspace }}/ipa_extract/Info.plist
+          
+          APP_VERSION=$(plutil -p ${{ github.workspace }}/ipa_extract/Info.plist 2>/dev/null | grep "CFBundleShortVersionString" | sed -E 's/.*"CFBundleShortVersionString"[[:space:]]*=>[[:space:]]*"([^"]+)".*/\1/')
+          if [ -z "$APP_VERSION" ]; then
+            echo "::error::Could not extract app version from Info.plist"
+            exit 1
+          fi
+          
+          echo "App version: $APP_VERSION"
+          echo "version=$APP_VERSION" >> $GITHUB_OUTPUT
+
       - name: Install Dependencies
         run: brew install make ldid
 
@@ -486,14 +507,14 @@ jobs:
             fi
           done
 
-          cyan -i youtube.ipa -o YTPlusYTweaks_${{ steps.ytlite_version.outputs.version }}.ipa -uwef $tweaks -n "${{ inputs.display_name }}" -b ${{ inputs.bundle_id }}
+          cyan -i youtube.ipa -o YTPlusYTweaks_${{ steps.ytlite_version.outputs.version }}_SDK${{ inputs.sdk_version }}_v${{ steps.app_version.outputs.version }}.ipa -uwef $tweaks -n "${{ inputs.display_name }}" -b ${{ inputs.bundle_id }}
 
       - name: Upload to GitHub Releases
         uses: softprops/action-gh-release@v2.0.1
         with:
           tag_name: ytp-${{ github.run_number }}
           name: YouTubePlus v${{ steps.ytlite_version.outputs.version }} (${{ github.run_number }})
-          files: YTPlusYTweaks_${{ steps.ytlite_version.outputs.version }}.ipa
+          files: YTPlusYTweaks_${{ steps.ytlite_version.outputs.version }}_SDK${{ inputs.sdk_version }}_v${{ steps.app_version.outputs.version }}.ipa
           draft: true
 
       - name: Output Release URL
