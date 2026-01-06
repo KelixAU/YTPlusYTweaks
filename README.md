@@ -59,7 +59,28 @@ If you plan on testing, adding other tweaks, making changes, or building very fr
         
 <li>Click "Run workflow".</li>
     <td><img src="Resources/scr15.jpg" alt="Screenshot 15" /></td>
-    <li>Wait for the build to finish. You can download the YouTube Plus app from the releases section of your forked repo. (If you can't find the releases section, go to your forked repo and add /releases to the URL, i.e., github.com/user/YTPlusYTweaks/releases.)</li>
+    <li>Wait for the build to finish. You can download the YouTube Plus app from the releases section of your forked repo. (If you can't find the releases section, go to your forked repo and add /releases to the URL, i.e., github.com/user/YTPlusYTweaks/releases.)</li><br>
+    
+
+<strong>Additional workflow options:</strong><br>
+- The version of YTLite to use:<br>
+  <em>Input a release tag from [dayanch96/YTLite/tags](https://github.com/dayanch96/YTLite/tags)</em><br>
+  Example: `5.2b3` or `v5.2b3`<br>
+- iOS SDK Version:<br>
+  <em>16.5 should be used for older devices, 18.6 can be used for newer devices</em><br>
+  Example: `16.5`<br>
+- Inject pre-built DEB(s):<br>
+  <em>User-provided DEBs can be downloaded and injected alongside other tweaks. Either provide comma-separated direct download links to .deb files OR a direct download link to zipped .deb files</em><br>
+  .deb example: `https://litter.catbox.moe/1.deb, https://litter.catbox.moe/2.deb`<br>
+  .zip example: `https://litter.catbox.moe/debs.zip`<br>
+- App Name:<br>
+  <em>Display name for the app on the homescreen</em><br>
+  Example: `YTPlusYTweaks`<br>
+- BundleID:<br>
+  <em>Unique identifier assigned to every application. Change if you want to have multiple installs of YouTube</em><br>
+  Example: `com.google.ios.youtube2`<br>
+
+
   </ol>
 </details>
 
